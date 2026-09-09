@@ -7,9 +7,17 @@
 *.egg-info/
 .pytest_cache/
 
-# Local ComfyUI copies and weights (multi-GB)
-ComfyUI-master_cp/
+# Duplicate ComfyUI tree and local caches
 ComfyUI-master_cp_te_exp/
+ComfyUI-master_cp/models/
+ComfyUI-master_cp/output/
+ComfyUI-master_cp/input/
+ComfyUI-master_cp/logs/
+ComfyUI-master_cp/user/
+ComfyUI-master_cp/.git/
+**/.deps/
+*.so
+*.so.*
 .tools/
 
 # Nested third-party git checkouts / vendored clones
