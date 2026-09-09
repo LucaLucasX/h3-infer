@@ -1,0 +1,6 @@
+minimax_h3:
+  base_path: /big_models/comfyui-minimax-H3/
+  diffusion_models: diffusion_models
+  text_encoders: text_encoders
+  vae: vae
+  loras: loras

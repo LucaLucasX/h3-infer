@@ -1,0 +1,184 @@
+{
+  "1": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "2": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+      "type": "minimax",
+      "device": "default"
+    }
+  },
+  "3": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_fp16.safetensors"
+    }
+  },
+  "4": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    }
+  },
+  "5": {
+    "class_type": "MiniMaxH3SpargeAttnPatchExp",
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "topk": 0.5,
+      "dense_first_steps": 0,
+      "num_layers": 50,
+      "audio_dense": true
+    }
+  },
+  "21": {
+    "class_type": "MiniMaxH3TurboLoRA",
+    "inputs": {
+      "model": [
+        "5",
+        0
+      ],
+      "lora_name": "lightx2v_fl2v/minimax_h3_fl2v_turbo_4step_v1.0_768p_comfyui_h3keys.safetensors",
+      "strength": 1.0,
+      "low_vram": false
+    }
+  },
+  "6": {
+    "class_type": "MiniMaxH3ImageToVideo",
+    "inputs": {
+      "clip": [
+        "2",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ],
+      "prompt": "A cinematic wide shot of a woman walking through neon-lit rain at night, photorealistic, natural motion, no text.",
+      "width": 1280,
+      "height": 704,
+      "length": 124
+    }
+  },
+  "50": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 42
+    }
+  },
+  "51": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "21",
+        0
+      ],
+      "conditioning": [
+        "6",
+        0
+      ]
+    }
+  },
+  "52": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "21",
+        0
+      ],
+      "scheduler": "simple",
+      "steps": 4,
+      "denoise": 1.0
+    }
+  },
+  "54": {
+    "class_type": "MiniMaxH3TurboSampler",
+    "inputs": {}
+  },
+  "53": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "50",
+        0
+      ],
+      "guider": [
+        "51",
+        0
+      ],
+      "sampler": [
+        "54",
+        0
+      ],
+      "sigmas": [
+        "52",
+        0
+      ],
+      "latent_image": [
+        "6",
+        1
+      ]
+    }
+  },
+  "60": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "53",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ]
+    }
+  },
+  "61": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "53",
+        0
+      ],
+      "vae": [
+        "4",
+        0
+      ]
+    }
+  },
+  "62": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": [
+        "60",
+        0
+      ],
+      "audio": [
+        "61",
+        0
+      ],
+      "fps": 24.0,
+      "bit_depth": 8
+    }
+  },
+  "63": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "62",
+        0
+      ],
+      "filename_prefix": "exp_h3_vae_trt/t2v5s",
+      "format": "auto",
+      "codec": "auto"
+    }
+  }
+}

@@ -1,0 +1,272 @@
+[
+ {
+  "case": "海边悬崖的最后一朵花-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "01",
+  "title": "海边悬崖的最后一朵花",
+  "tag": "故事"
+ },
+ {
+  "case": "微型机械蜂的桌面冒险-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "02",
+  "title": "微型机械蜂的桌面冒险",
+  "tag": "FPV"
+ },
+ {
+  "case": "极冬剑皇-冰火斩-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "03",
+  "title": "极冬剑皇 · 冰火斩",
+  "tag": "CG"
+ },
+ {
+  "case": "观星阁的发光灵蝶-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "04",
+  "title": "观星阁的发光灵蝶",
+  "tag": "实验影像"
+ },
+ {
+  "case": "穿越虫洞的宇航员-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "05",
+  "title": "穿越虫洞的宇航员",
+  "tag": "科幻"
+ },
+ {
+  "case": "顾少，我们完了-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "06",
+  "title": "顾少，我们完了",
+  "tag": "喜剧"
+ },
+ {
+  "case": "CYBER-QUEEN-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "07",
+  "title": "CYBER QUEEN",
+  "tag": "MV"
+ },
+ {
+  "case": "战地破晓-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "08",
+  "title": "战地破晓",
+  "tag": "人像"
+ },
+ {
+  "case": "今晚早点休息-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "09",
+  "title": "今晚早点休息",
+  "tag": "Vlog"
+ },
+ {
+  "case": "好好喝汽水-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "10",
+  "title": "好好喝汽水",
+  "tag": "广告"
+ },
+ {
+  "case": "穿过峡谷的柠檬-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "11",
+  "title": "穿过峡谷的柠檬",
+  "tag": "创意"
+ },
+ {
+  "case": "夏日美妆教程-15s",
+  "duration": "15",
+  "aspect": "9:16",
+  "width": 768,
+  "height": 1344,
+  "id": "12",
+  "title": "夏日美妆教程",
+  "tag": "生活"
+ },
+ {
+  "case": "桃子麻薯与小猫-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "13",
+  "title": "桃子麻薯与小猫",
+  "tag": "治愈"
+ },
+ {
+  "case": "猫咪漂流记-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "14",
+  "title": "猫咪漂流记",
+  "tag": "喜剧"
+ },
+ {
+  "case": "失重舞者-15s",
+  "duration": "15",
+  "aspect": "9:16",
+  "width": 768,
+  "height": 1344,
+  "id": "15",
+  "title": "失重舞者",
+  "tag": "实验"
+ },
+ {
+  "case": "Y2K-梦境爱豆-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "16",
+  "title": "Y2K 梦境爱豆",
+  "tag": "MV"
+ },
+ {
+  "case": "时间冻结的街景-11s",
+  "duration": "11",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "seedance-006",
+  "title": "时间冻结的街景",
+  "tag": "奇幻"
+ },
+ {
+  "case": "飞越古伦敦-10s",
+  "duration": "10",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "seedance-014",
+  "title": "飞越古伦敦",
+  "tag": "旅行"
+ },
+ {
+  "case": "世界武术对决-10s",
+  "duration": "10",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "seedance-015",
+  "title": "世界武术对决",
+  "tag": "动作"
+ },
+ {
+  "case": "猫咪科技战争-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "seedance-020",
+  "title": "猫咪科技战争",
+  "tag": "科幻"
+ },
+ {
+  "case": "咖啡馆的一天-15s",
+  "duration": "15",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "seedance-027",
+  "title": "咖啡馆的一天",
+  "tag": "生活"
+ },
+ {
+  "case": "会说话的番茄-12s",
+  "duration": "12",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "seedance-077",
+  "title": "会说话的番茄",
+  "tag": "动画"
+ },
+ {
+  "case": "万物组装的机械巨兽-10s",
+  "duration": "10",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "seedance-079",
+  "title": "万物组装的机械巨兽",
+  "tag": "变形"
+ },
+ {
+  "case": "雪山上的雪豹-10s",
+  "duration": "10",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "seedance-218",
+  "title": "雪山上的雪豹",
+  "tag": "纪录片"
+ },
+ {
+  "case": "广州晨昏群像-10s",
+  "duration": "10",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "seedance-230",
+  "title": "广州晨昏群像",
+  "tag": "城市"
+ },
+ {
+  "case": "机械腕表的精密解构-10s",
+  "duration": "10",
+  "aspect": "9:16",
+  "width": 768,
+  "height": 1344,
+  "id": "seedance-252",
+  "title": "机械腕表的精密解构",
+  "tag": "产品"
+ },
+ {
+  "case": "雪崩追逐山口列车-10s",
+  "duration": "10",
+  "aspect": "16:9",
+  "width": 1344,
+  "height": 768,
+  "id": "seedance-300",
+  "title": "雪崩追逐山口列车",
+  "tag": "大片"
+ }
+]

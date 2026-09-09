@@ -1,0 +1,336 @@
+{
+  "1": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "2": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+      "type": "minimax",
+      "device": "default"
+    }
+  },
+  "3": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_fp16.safetensors"
+    }
+  },
+  "4": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    }
+  },
+  "5": {
+    "class_type": "MiniMaxH3SpargeAttnPatchExp",
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "topk": 0.5,
+      "dense_first_steps": 0,
+      "num_layers": 50,
+      "audio_dense": true
+    }
+  },
+  "21": {
+    "class_type": "MiniMaxH3TurboLoRA",
+    "inputs": {
+      "model": [
+        "5",
+        0
+      ],
+      "lora_name": "lightx2v_fl2v/minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors",
+      "strength": 1.0,
+      "low_vram": false
+    }
+  },
+  "23": {
+    "class_type": "MiniMaxLowVRAMAttention",
+    "inputs": {
+      "model": [
+        "21",
+        0
+      ],
+      "head_chunks": 4
+    }
+  },
+  "24": {
+    "class_type": "MiniMaxChunkFeedForward",
+    "inputs": {
+      "model": [
+        "23",
+        0
+      ],
+      "chunks": 2,
+      "seq_threshold": 4096
+    }
+  },
+  "80": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "01.png"
+    }
+  },
+  "81": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "02.png"
+    }
+  },
+  "82": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "i1.png"
+    }
+  },
+  "83": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "realref_full_01.png"
+    }
+  },
+  "84": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "realref_full_02.png"
+    }
+  },
+  "85": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "realref_full_03.png"
+    }
+  },
+  "86": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "realref_bust_01.jpg"
+    }
+  },
+  "87": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "realref_bust_02.jpg"
+    }
+  },
+  "90": {
+    "class_type": "LoadVideo",
+    "inputs": {
+      "file": "h3_test_video_12s.mp4"
+    }
+  },
+  "91": {
+    "class_type": "GetVideoComponents",
+    "inputs": {
+      "video": [
+        "90",
+        0
+      ]
+    }
+  },
+  "92": {
+    "class_type": "LoadVideo",
+    "inputs": {
+      "file": "h3_test_video_12s_b.mp4"
+    }
+  },
+  "93": {
+    "class_type": "GetVideoComponents",
+    "inputs": {
+      "video": [
+        "92",
+        0
+      ]
+    }
+  },
+  "6": {
+    "class_type": "MiniMaxH3ReferenceToVideo",
+    "inputs": {
+      "clip": [
+        "2",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ],
+      "audio_vae": [
+        "4",
+        0
+      ],
+      "prompt": "Cinematic photorealistic scene matching <Picture 1> <Picture 2> <Picture 3> <Picture 4> <Picture 5> <Picture 6> <Picture 7> <Picture 8> <Video 1> <Video 2>. Natural motion, consistent identity and lighting, no text or logos.",
+      "width": 1280,
+      "height": 704,
+      "length": 294,
+      "ref_image_size": "match",
+      "ref_images.ref_image_0": [
+        "80",
+        0
+      ],
+      "ref_images.ref_image_1": [
+        "81",
+        0
+      ],
+      "ref_images.ref_image_2": [
+        "82",
+        0
+      ],
+      "ref_images.ref_image_3": [
+        "83",
+        0
+      ],
+      "ref_images.ref_image_4": [
+        "84",
+        0
+      ],
+      "ref_images.ref_image_5": [
+        "85",
+        0
+      ],
+      "ref_images.ref_image_6": [
+        "86",
+        0
+      ],
+      "ref_images.ref_image_7": [
+        "87",
+        0
+      ],
+      "ref_videos.ref_video_0": [
+        "91",
+        0
+      ],
+      "ref_video_audios.ref_video_audio_0": [
+        "91",
+        1
+      ],
+      "ref_videos.ref_video_1": [
+        "93",
+        0
+      ],
+      "ref_video_audios.ref_video_audio_1": [
+        "93",
+        1
+      ]
+    }
+  },
+  "50": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 42
+    }
+  },
+  "51": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "24",
+        0
+      ],
+      "conditioning": [
+        "6",
+        0
+      ]
+    }
+  },
+  "52": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "24",
+        0
+      ],
+      "scheduler": "simple",
+      "steps": 4,
+      "denoise": 1.0
+    }
+  },
+  "54": {
+    "class_type": "MiniMaxH3TurboSampler",
+    "inputs": {}
+  },
+  "53": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "50",
+        0
+      ],
+      "guider": [
+        "51",
+        0
+      ],
+      "sampler": [
+        "54",
+        0
+      ],
+      "sigmas": [
+        "52",
+        0
+      ],
+      "latent_image": [
+        "6",
+        1
+      ]
+    }
+  },
+  "60": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "53",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ]
+    }
+  },
+  "61": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "53",
+        0
+      ],
+      "vae": [
+        "4",
+        0
+      ]
+    }
+  },
+  "62": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": [
+        "60",
+        0
+      ],
+      "audio": [
+        "61",
+        0
+      ],
+      "fps": 24.0,
+      "bit_depth": 8
+    }
+  },
+  "63": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "62",
+        0
+      ],
+      "filename_prefix": "exp_prod_704p/prod_sage_sparge_4step_lowvram_r2v_12s",
+      "format": "auto",
+      "codec": "auto"
+    }
+  }
+}

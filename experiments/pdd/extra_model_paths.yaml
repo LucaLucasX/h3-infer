@@ -1,0 +1,15 @@
+# Experiment-only model roots for PDD Acc. Does NOT modify /big_models.
+# Base H3 weights still come from the shared big_models path (read-only).
+
+minimax_h3:
+  base_path: /big_models/comfyui-minimax-H3/
+  diffusion_models: diffusion_models
+  text_encoders: text_encoders
+  vae: vae
+  loras: loras
+
+# PDD Acc files live under experiments/pdd/models/pdd_acc (also symlinked into
+# ComfyUI-master_cp/models/pdd_acc by run_comfy.sh so the node folder_paths find them).
+pdd_exp:
+  base_path: /mnt/luca/H3_infer/experiments/pdd/models/
+  pdd_acc: pdd_acc

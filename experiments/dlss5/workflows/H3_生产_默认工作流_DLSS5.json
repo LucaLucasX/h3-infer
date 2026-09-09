@@ -1,0 +1,1392 @@
+{
+  "id": "b51b15dd-d963-46ad-b078-34a43218c9f6",
+  "revision": 0,
+  "last_node_id": 67,
+  "last_link_id": 22,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UNETLoader",
+      "pos": [
+        -349.3028518676758,
+        56.697095380510596
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "unet_name",
+          "name": "unet_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "unet_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "weight_dtype",
+          "name": "weight_dtype",
+          "type": "COMBO",
+          "widget": {
+            "name": "weight_dtype"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "MODEL",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+        "default"
+      ]
+    },
+    {
+      "id": 21,
+      "type": "MiniMaxH3TurboLoRA",
+      "pos": [
+        290.39994724818627,
+        -246.61733540126212
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 2
+        },
+        {
+          "localized_name": "lora_name",
+          "name": "lora_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "lora_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "strength",
+          "name": "strength",
+          "type": "FLOAT",
+          "widget": {
+            "name": "strength"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "low_vram",
+          "name": "low_vram",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "low_vram"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "MODEL",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3TurboLoRA"
+      },
+      "widgets_values": [
+        "lightx2v_fl2v/minimax_h3_fl2v_turbo_4step_v1.0_768p_comfyui_h3keys.safetensors",
+        1,
+        false
+      ]
+    },
+    {
+      "id": 52,
+      "type": "BasicScheduler",
+      "pos": [
+        593.1279008265888,
+        -458.03549503871346
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 7
+        },
+        {
+          "localized_name": "scheduler",
+          "name": "scheduler",
+          "type": "COMBO",
+          "widget": {
+            "name": "scheduler"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "steps",
+          "name": "steps",
+          "type": "INT",
+          "widget": {
+            "name": "steps"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "denoise",
+          "name": "denoise",
+          "type": "FLOAT",
+          "widget": {
+            "name": "denoise"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "SIGMAS",
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicScheduler"
+      },
+      "widgets_values": [
+        "simple",
+        4,
+        1
+      ]
+    },
+    {
+      "id": 51,
+      "type": "BasicGuider",
+      "pos": [
+        596.0457528250555,
+        -49.65701392037601
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 5
+        },
+        {
+          "localized_name": "conditioning",
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "GUIDER",
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicGuider"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 2,
+      "type": "CLIPLoader",
+      "pos": [
+        -350.1257723127091,
+        265.5085556030277
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip_name",
+          "name": "clip_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "clip_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "type",
+          "name": "type",
+          "type": "COMBO",
+          "widget": {
+            "name": "type"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "device",
+          "name": "device",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "device"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+        "minimax",
+        "default"
+      ]
+    },
+    {
+      "id": 53,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        1028.8731449672157,
+        140.32679964337987
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "noise",
+          "name": "noise",
+          "type": "NOISE",
+          "link": 8
+        },
+        {
+          "localized_name": "guider",
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 9
+        },
+        {
+          "localized_name": "sampler",
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 10
+        },
+        {
+          "localized_name": "sigmas",
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 11
+        },
+        {
+          "localized_name": "latent_image",
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 12
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "output",
+          "name": "output",
+          "type": "LATENT",
+          "links": null
+        },
+        {
+          "localized_name": "denoised_output",
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 4,
+      "type": "VAELoader",
+      "pos": [
+        1043.5313441685264,
+        -439.74857406616223
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "vae_name",
+          "name": "vae_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "vae_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "VAE",
+          "name": "VAE",
+          "type": "VAE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "minimax_h3_audio_vae_fp32.safetensors"
+      ]
+    },
+    {
+      "id": 61,
+      "type": "VAEDecodeAudio",
+      "pos": [
+        1386.763485543386,
+        -180.97494576590364
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "LATENT",
+          "link": 15
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "type": "VAE",
+          "link": 16
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "AUDIO",
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            21
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecodeAudio"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 60,
+      "type": "VAEDecode",
+      "pos": [
+        1366.5668866838741,
+        330.9588876070295
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "LATENT",
+          "link": 13
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "type": "VAE",
+          "link": 14
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            20
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 54,
+      "type": "MiniMaxH3TurboSampler",
+      "pos": [
+        735.5759256199434,
+        551.4502086966379
+      ],
+      "size": [
+        280.2447265625,
+        120
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "localized_name": "SAMPLER",
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3TurboSampler"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 62,
+      "type": "CreateVideo",
+      "pos": [
+        1829.4228571428584,
+        118.96683129446858
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 17
+        },
+        {
+          "localized_name": "audio",
+          "name": "audio",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": 18
+        },
+        {
+          "localized_name": "fps",
+          "name": "fps",
+          "type": "FLOAT",
+          "widget": {
+            "name": "fps"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "bit_depth",
+          "name": "bit_depth",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "bit_depth"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "VIDEO",
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreateVideo"
+      },
+      "widgets_values": [
+        24,
+        8
+      ]
+    },
+    {
+      "id": 63,
+      "type": "SaveVideo",
+      "pos": [
+        2221.007029113771,
+        112.8182414027622
+      ],
+      "size": [
+        260,
+        106
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "video",
+          "name": "video",
+          "type": "VIDEO",
+          "link": 19
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "format",
+          "name": "format",
+          "type": "COMBO",
+          "widget": {
+            "name": "format"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "codec",
+          "name": "codec",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "codec"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "video",
+          "name": "video",
+          "type": "VIDEO",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveVideo"
+      },
+      "widgets_values": [
+        "H3_production/t2v_768p12s",
+        "auto",
+        "auto"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "VAELoader",
+      "pos": [
+        -355.09712175641795,
+        485.9359493582591
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "vae_name",
+          "name": "vae_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "vae_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "VAE",
+          "name": "VAE",
+          "type": "VAE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "minimax_h3_video_vae_fp16.safetensors"
+      ]
+    },
+    {
+      "id": 50,
+      "type": "RandomNoise",
+      "pos": [
+        258.0114950997488,
+        406.948560878209
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "noise_seed",
+          "name": "noise_seed",
+          "type": "INT",
+          "widget": {
+            "name": "noise_seed"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "NOISE",
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RandomNoise"
+      },
+      "widgets_values": [
+        42,
+        "increment"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "MiniMaxH3ImageToVideo",
+      "pos": [
+        200.27870627266933,
+        87.9497200884139
+      ],
+      "size": [
+        260,
+        220
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 3
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "type": "VAE",
+          "link": 4
+        },
+        {
+          "localized_name": "first_frame",
+          "name": "first_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "last_frame",
+          "name": "last_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "prompt",
+          "name": "prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "prompt"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "length",
+          "name": "length",
+          "type": "INT",
+          "widget": {
+            "name": "length"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "positive",
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": null
+        },
+        {
+          "localized_name": "LATENT",
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3ImageToVideo"
+      },
+      "widgets_values": [
+        "Cinematic photorealistic rainy-night Tokyo street, 24fps, shallow depth of field. A woman in a red trench coat with a black umbrella walks toward camera. Audio: stereo rain, soft jazz, footsteps. No text overlays, no logos.",
+        1344,
+        768,
+        294
+      ]
+    },
+    {
+      "id": 5,
+      "type": "MiniMaxH3SpargeAttnPatchExp",
+      "pos": [
+        -49.748581978934425,
+        -221.8103986031666
+      ],
+      "size": [
+        278.8775390625,
+        130
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        },
+        {
+          "localized_name": "topk",
+          "name": "topk",
+          "type": "FLOAT",
+          "widget": {
+            "name": "topk"
+          },
+          "link": null
+        },
+        {
+          "label": "dense_first_steps",
+          "localized_name": "dense_first_steps",
+          "name": "dense_first_steps",
+          "type": "INT",
+          "widget": {
+            "name": "dense_first_steps"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "num_layers",
+          "name": "num_layers",
+          "type": "INT",
+          "widget": {
+            "name": "num_layers"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "audio_dense",
+          "name": "audio_dense",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "audio_dense"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "MODEL",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3SpargeAttnPatchExp"
+      },
+      "widgets_values": [
+        0.5,
+        0,
+        50,
+        true
+      ]
+    },
+    {
+      "id": 64,
+      "type": "TE_DLSS5_VideoEnhancer",
+      "pos": [
+        1829.42,
+        400.0
+      ],
+      "size": [
+        340,
+        250
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 4,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 20
+        },
+        {
+          "localized_name": "frame_count",
+          "name": "frame_count",
+          "type": "INT",
+          "widget": {
+            "name": "frame_count"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "style",
+          "name": "style",
+          "type": "COMBO",
+          "widget": {
+            "name": "style"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "intensity",
+          "name": "intensity",
+          "type": "FLOAT",
+          "widget": {
+            "name": "intensity"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "local_tone",
+          "name": "local_tone",
+          "type": "FLOAT",
+          "widget": {
+            "name": "local_tone"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "local_structure",
+          "name": "local_structure",
+          "type": "FLOAT",
+          "widget": {
+            "name": "local_structure"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "guidance",
+          "name": "guidance",
+          "type": "COMBO",
+          "widget": {
+            "name": "guidance"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "depth_interval",
+          "name": "depth_interval",
+          "type": "INT",
+          "widget": {
+            "name": "depth_interval"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "output_fps",
+          "name": "output_fps",
+          "type": "FLOAT",
+          "widget": {
+            "name": "output_fps"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "output_prefix",
+          "name": "output_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "output_prefix"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "audio",
+          "name": "audio",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": 21
+        },
+        {
+          "localized_name": "video_info",
+          "name": "video_info",
+          "shape": 7,
+          "type": "VHS_VIDEOINFO",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "video",
+          "name": "video",
+          "type": "VIDEO",
+          "links": [
+            22
+          ]
+        },
+        {
+          "localized_name": "status",
+          "name": "status",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "title": "TE DLSS5 Video Enhancer (NR / nvof)",
+      "properties": {
+        "Node name for S&R": "TE_DLSS5_VideoEnhancer"
+      },
+      "widgets_values": [
+        0,
+        "natural",
+        0.7,
+        1.0,
+        0.9,
+        "nvof",
+        4,
+        24.0,
+        "H3_production/t2v_768p12s_dlss5_nvof"
+      ],
+      "widgets_values_named": {
+        "frame_count": 0,
+        "style": "natural",
+        "intensity": 0.7,
+        "local_tone": 1.0,
+        "local_structure": 0.9,
+        "guidance": "nvof",
+        "depth_interval": 4,
+        "output_fps": 24.0,
+        "output_prefix": "H3_production/t2v_768p12s_dlss5_nvof"
+      },
+      "color": "#b52833",
+      "bgcolor": "#3a2526"
+    },
+    {
+      "id": 65,
+      "type": "SaveVideo",
+      "pos": [
+        2221.0,
+        400.0
+      ],
+      "size": [
+        280,
+        106
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 4,
+      "inputs": [
+        {
+          "localized_name": "video",
+          "name": "video",
+          "type": "VIDEO",
+          "link": 22
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "format",
+          "name": "format",
+          "type": "COMBO",
+          "widget": {
+            "name": "format"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "codec",
+          "name": "codec",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "codec"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "video",
+          "name": "video",
+          "type": "VIDEO",
+          "links": null
+        }
+      ],
+      "title": "SaveVideo (DLSS5 NR)",
+      "properties": {
+        "Node name for S&R": "SaveVideo"
+      },
+      "widgets_values": [
+        "H3_production/t2v_768p12s_dlss5",
+        "auto",
+        "auto"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "H3_production/t2v_768p12s_dlss5",
+        "format": "auto",
+        "codec": "auto"
+      },
+      "color": "#b52833",
+      "bgcolor": "#3a2526"
+    },
+    {
+      "id": 66,
+      "type": "TE_DLSS5_BackendStatus",
+      "pos": [
+        1829.42,
+        700.0
+      ],
+      "size": [
+        320,
+        58
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "localized_name": "status",
+          "name": "status",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "title": "TE DLSS5 Backend Status",
+      "properties": {
+        "Node name for S&R": "TE_DLSS5_BackendStatus"
+      },
+      "widgets_values": [],
+      "color": "#2a55cf",
+      "bgcolor": "#252b3e"
+    },
+    {
+      "id": 67,
+      "type": "MarkdownNote",
+      "pos": [
+        1460.0,
+        400.0
+      ],
+      "size": [
+        360,
+        220
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "TE DLSS5 NR",
+      "properties": {},
+      "widgets_values": [
+        "TE DLSS5 NR（同分辨率神经渲染）\n默认旁路，避免 Linux 本机 Feature 18 报错。\nWindows 启用步骤：\n1. 把 nvngx_dlssnr.dll 放到 custom_nodes/TE-ComfyUI-DLSS5/runtime/dlssnr/\n2. 取消旁路本节点和下面的 SaveVideo\n3. 保持 guidance=nvof，不要先开 nvof_depth\n4. intensity 0.6~0.8，style=natural\n本机 Linux 5090 跑不了 D3D12/NGX Feature 18。"
+      ],
+      "widgets_values_named": {
+        "text": "TE DLSS5 NR（同分辨率神经渲染）\n默认旁路，避免 Linux 本机 Feature 18 报错。\nWindows 启用步骤：\n1. 把 nvngx_dlssnr.dll 放到 custom_nodes/TE-ComfyUI-DLSS5/runtime/dlssnr/\n2. 取消旁路本节点和下面的 SaveVideo\n3. 保持 guidance=nvof，不要先开 nvof_depth\n4. intensity 0.6~0.8，style=natural\n本机 Linux 5090 跑不了 D3D12/NGX Feature 18。"
+      },
+      "color": "#cf2a2a",
+      "bgcolor": "#3e2525"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      5,
+      0,
+      "MODEL"
+    ],
+    [
+      2,
+      5,
+      0,
+      21,
+      0,
+      "MODEL"
+    ],
+    [
+      3,
+      2,
+      0,
+      6,
+      0,
+      "CLIP"
+    ],
+    [
+      4,
+      3,
+      0,
+      6,
+      1,
+      "VAE"
+    ],
+    [
+      5,
+      21,
+      0,
+      51,
+      0,
+      "MODEL"
+    ],
+    [
+      6,
+      6,
+      0,
+      51,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      7,
+      21,
+      0,
+      52,
+      0,
+      "MODEL"
+    ],
+    [
+      8,
+      50,
+      0,
+      53,
+      0,
+      "NOISE"
+    ],
+    [
+      9,
+      51,
+      0,
+      53,
+      1,
+      "GUIDER"
+    ],
+    [
+      10,
+      54,
+      0,
+      53,
+      2,
+      "SAMPLER"
+    ],
+    [
+      11,
+      52,
+      0,
+      53,
+      3,
+      "SIGMAS"
+    ],
+    [
+      12,
+      6,
+      1,
+      53,
+      4,
+      "LATENT"
+    ],
+    [
+      13,
+      53,
+      0,
+      60,
+      0,
+      "LATENT"
+    ],
+    [
+      14,
+      3,
+      0,
+      60,
+      1,
+      "VAE"
+    ],
+    [
+      15,
+      53,
+      0,
+      61,
+      0,
+      "LATENT"
+    ],
+    [
+      16,
+      4,
+      0,
+      61,
+      1,
+      "VAE"
+    ],
+    [
+      17,
+      60,
+      0,
+      62,
+      0,
+      "IMAGE"
+    ],
+    [
+      18,
+      61,
+      0,
+      62,
+      1,
+      "AUDIO"
+    ],
+    [
+      19,
+      62,
+      0,
+      63,
+      0,
+      "VIDEO"
+    ],
+    [
+      20,
+      60,
+      0,
+      64,
+      0,
+      "IMAGE"
+    ],
+    [
+      21,
+      61,
+      0,
+      64,
+      10,
+      "AUDIO"
+    ],
+    [
+      22,
+      64,
+      0,
+      65,
+      0,
+      "VIDEO"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.5785123966942148,
+      "offset": [
+        627.5446409237596,
+        771.8787564886982
+      ]
+    },
+    "production_stack": "t2v",
+    "dlss5_nr": {
+      "node": "TE_DLSS5_VideoEnhancer",
+      "guidance": "nvof",
+      "default_bypassed": true,
+      "reason": "Linux host cannot run D3D12 Feature 18"
+    }
+  },
+  "version": 0.4
+}

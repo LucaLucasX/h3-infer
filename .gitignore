@@ -1,0 +1,67 @@
+# Python / venv
+.venv/
+.venv*/
+**/.venv/
+**/__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Local ComfyUI copies and weights (multi-GB)
+ComfyUI-master_cp/
+ComfyUI-master_cp_te_exp/
+.tools/
+
+# Nested third-party git checkouts / vendored clones
+tools/Real-ESRGAN/
+tools/realesrgan/*.zip
+tools/realesrgan/realesrgan-ncnn-vulkan
+H3-DMD-SLA/vendor/
+experiments/**/vendor/
+
+# Models, media, engine dumps
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.onnx
+*.engine
+*.gguf
+*.npz
+*.mp4
+*.webm
+*.wav
+*.flac
+*.jpg
+*.jpeg
+*.png
+*.webp
+!**/docs/**/*.png
+!**/assets/**/*.png
+
+# Run artifacts
+**/output/
+**/logs/
+*.log
+*.log.bak
+*.pid
+*.bak
+
+# Secrets / local data dumps
+.env
+.env.*
+*.pem
+*.key
+id_rsa
+id_ed25519*
+keys/
+data/*.csv
+
+# Temp hide of nested .git while staging
+.git.__outer/
+
+# Editors
+.DS_Store
+.idea/
+*.swp

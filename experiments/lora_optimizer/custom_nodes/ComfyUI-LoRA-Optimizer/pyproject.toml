@@ -1,0 +1,20 @@
+[project]
+name = "comfyui-lora-optimizer"
+description = "Auto-optimizer node for combining multiple LoRAs via diff-based merging with TIES conflict resolution"
+version = "1.8.3"
+license = { text = "GPL-3.0-only" }
+dependencies = [
+    "scikit-learn>=1.3",
+]
+
+[project.urls]
+Repository = "https://github.com/ethanfel/ComfyUI-LoRA-Optimizer"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--import-mode=importlib"
+
+[tool.comfy]
+PublisherId = "ethanfel"
+DisplayName = "LoRA Optimizer"
+Icon = "https://raw.githubusercontent.com/ethanfel/ComfyUI-LoRA-Optimizer/main/assets/banner.svg"

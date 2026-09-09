@@ -1,0 +1,4 @@
+# Experiment-only: do NOT touch /big_models. Used via --extra-model-paths-config.
+sla_exp:
+  base_path: /mnt/luca/H3_infer/experiments/sla/models/
+  loras: loras

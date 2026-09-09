@@ -1,0 +1,381 @@
+diff --git a/comfy/ldm/minimax/model.py b/comfy/ldm/minimax/model.py
+index 494350d..a98ff8b 100644
+--- a/comfy/ldm/minimax/model.py
++++ b/comfy/ldm/minimax/model.py
+@@ -495,6 +495,28 @@ class MiniMaxH3Model(nn.Module):
+             rows.append(r.to(device))
+         return torch.cat(rows, dim=0) if rows else None
+ 
++    def _run_blocks(self, h, t_emb, mod_segments, rope_freqs, transformer_options, start=0, end=None):
++        patches_replace = transformer_options.get("patches_replace", {})
++        blocks_replace = patches_replace.get("dit", {})
++        end = len(self.blocks) if end is None else end
++        prefetch_queue = comfy.model_prefetch.make_prefetch_queue(list(self.blocks[start:end]), h.device, transformer_options)
++        for i in range(start, end):
++            block = self.blocks[i]
++            comfy.model_prefetch.prefetch_queue_pop(prefetch_queue, h.device, block)
++            if ("double_block", i) in blocks_replace:
++                def block_wrap(args):
++                    return {"img": block(args["img"], args["t_emb"], args["mod_segments"], args["rope_freqs"],
++                                         transformer_options=args["transformer_options"])}
++                h = blocks_replace[("double_block", i)](
++                    {"img": h, "t_emb": t_emb, "mod_segments": mod_segments, "rope_freqs": rope_freqs,
++                     "transformer_options": transformer_options},
++                    {"original_block": block_wrap})["img"]
++            else:
++                h = block(h, t_emb, mod_segments, rope_freqs, transformer_options=transformer_options)
++        if prefetch_queue is not None:
++            comfy.model_prefetch.prefetch_queue_pop(prefetch_queue, h.device, None)
++        return h
++
+     def forward(self, x, timestep, context, transformer_options={}, minimax_payload=None, **kwargs):
+         return comfy.patcher_extension.WrapperExecutor.new_class_executor(
+             self._forward,
+@@ -610,25 +632,25 @@ class MiniMaxH3Model(nn.Module):
+ 
+         # rotation table computed once per forward, consumed by the kitchen split-half rope
+         rope_freqs = rope_rotation_table(self.rope_freqs(layout.position_ids, device), dtype)
++        # Packed [text|…|audio|video] slices for Sparge audio-block boost (token-refiner seq differs).
++        transformer_options["h3_pack_segments"] = layout.segments
++        transformer_options["h3_pack_seq_len"] = int(layout.seq_len)
+ 
+         # blocks
++        # blocks (TE-Speed-MiniMaxH3-OSS hook)
+         patches_replace = transformer_options.get("patches_replace", {})
+         blocks_replace = patches_replace.get("dit", {})
+-        prefetch_queue = comfy.model_prefetch.make_prefetch_queue(list(self.blocks), device, transformer_options)
+-        for i, block in enumerate(self.blocks):
+-            comfy.model_prefetch.prefetch_queue_pop(prefetch_queue, device, block)
+-            if ("double_block", i) in blocks_replace:
+-                def block_wrap(args):
+-                    return {"img": block(args["img"], args["t_emb"], args["mod_segments"], args["rope_freqs"],
+-                                         transformer_options=args["transformer_options"])}
+-                h = blocks_replace[("double_block", i)](
+-                    {"img": h, "t_emb": t_emb, "mod_segments": mod_segments, "rope_freqs": rope_freqs,
+-                     "transformer_options": transformer_options},
+-                    {"original_block": block_wrap})["img"]
+-            else:
+-                h = block(h, t_emb, mod_segments, rope_freqs, transformer_options=transformer_options)
+-        if prefetch_queue is not None:
+-            comfy.model_prefetch.prefetch_queue_pop(prefetch_queue, device, None)
++        cache_ranges = [(a, b) for a, b, kind in layout.segments if kind in ("audio", "video")]
++        if ("block_loop", 0) in blocks_replace:
++            def block_loop_wrap(args):
++                return {"img": self._run_blocks(args["img"], args["t_emb"], args["mod_segments"], args["rope_freqs"],
++                                                args["transformer_options"], args.get("start", 0), args.get("end"))}
++            h = blocks_replace[("block_loop", 0)](
++                {"img": h, "t_emb": t_emb, "mod_segments": mod_segments, "rope_freqs": rope_freqs,
++                 "transformer_options": transformer_options, "cache_ranges": cache_ranges, "block_count": len(self.blocks)},
++                {"original_block": block_loop_wrap})["img"]
++        else:
++            h = self._run_blocks(h, t_emb, mod_segments, rope_freqs, transformer_options)
+ 
+         # target streams are single contiguous segments (audio then video, last two)
+         video_seg = next((a, b, t_row[seg_t["video"]]) for a, b, k in layout.segments if k == "video")
+diff --git a/comfy/text_encoders/minimax.py b/comfy/text_encoders/minimax.py
+index c2dc47f..36b1efa 100644
+--- a/comfy/text_encoders/minimax.py
++++ b/comfy/text_encoders/minimax.py
+@@ -20,6 +20,7 @@ returned alongside the embeddings as "minimax_token_tags".
+ """
+ 
+ import math
++import time
+ 
+ import torch
+ import torch.nn.functional as F
+@@ -88,6 +89,7 @@ class MiniMaxQwen3VL(Qwen3VL):
+             return merged, {"grid": grid, "deepstack": deepstack}
+         return super().preprocess_embed(embed, device)
+ 
++
+     def forward(self, input_ids, attention_mask=None, embeds=None, num_tokens=None,
+                 intermediate_output=None, final_layer_norm_intermediate=True,
+                 dtype=None, embeds_info=[], **kwargs):
+@@ -107,7 +109,12 @@ class MiniMaxH3ClipModel(comfy.sd1_clip.SDClipModel):
+                          return_attention_masks=False, model_options=model_options)
+ 
+     def encode_token_weights(self, token_weight_pairs):
++        started = time.perf_counter()
+         out = super().encode_token_weights(token_weight_pairs)
++        print(
++            f"[H3_TE_TIMING] encode={time.perf_counter() - started:.3f}s",
++            flush=True,
++        )
+         tags = getattr(self.transformer, "last_token_tags", None)
+         if tags is not None:
+             extra = out[2] if len(out) > 2 and isinstance(out[2], dict) else {}
+diff --git a/comfy_extras/nodes_audio.py b/comfy_extras/nodes_audio.py
+index 1c6e91f..124dbe8 100644
+--- a/comfy_extras/nodes_audio.py
++++ b/comfy_extras/nodes_audio.py
+@@ -7,6 +7,7 @@ import os
+ import hashlib
+ import node_helpers
+ import logging
++import time
+ from typing_extensions import override
+ from comfy_api.latest import ComfyExtension, IO, UI
+ 
+@@ -129,7 +130,12 @@ class VAEDecodeAudio(IO.ComfyNode):
+ 
+     @classmethod
+     def execute(cls, vae, samples) -> IO.NodeOutput:
+-        return IO.NodeOutput(vae_decode_audio(vae, samples))
++        t0 = time.perf_counter()
++        out = vae_decode_audio(vae, samples)
++        dt = time.perf_counter() - t0
++        wf = out.get("waveform")
++        print(f"[VAE_AUDIO_TIMING] decode={dt:.2f}s waveform_shape={tuple(wf.shape) if wf is not None else None}", flush=True)
++        return IO.NodeOutput(out)
+ 
+     decode = execute  # TODO: remove
+ 
+diff --git a/comfy_extras/nodes_minimax_h3.py b/comfy_extras/nodes_minimax_h3.py
+index 22bc91c..56701a9 100644
+--- a/comfy_extras/nodes_minimax_h3.py
++++ b/comfy_extras/nodes_minimax_h3.py
+@@ -10,6 +10,7 @@ audio stream's shifted schedule internally).
+ """
+ 
+ import math
++import time
+ 
+ import torch
+ import torchaudio
+@@ -204,9 +205,23 @@ class MiniMaxH3ReferenceToVideo(io.ComfyNode):
+         vae_sr = getattr(audio_vae, "audio_sample_rate", 32000)
+         if sr != vae_sr:
+             waveform = torchaudio.functional.resample(waveform, sr, vae_sr)
+-        z = audio_vae.encode(waveform[:1].movedim(1, -1))  # [1, 32, 2, T]
++        waveform = waveform[:1].movedim(1, -1)
++        comfy.model_management.synchronize()
++        started = time.perf_counter()
++        z = audio_vae.encode(waveform)  # [1, 32, 2, T]
++        comfy.model_management.synchronize()
++        print(f"[H3_VAE_TIMING] ref_audio_encode={time.perf_counter() - started:.3f}s samples={waveform.shape[-2]}", flush=True)
+         return z, z.shape[-1]
+ 
++    @staticmethod
++    def _encode_ref_vae(vae, pixels, kind):
++        comfy.model_management.synchronize()
++        started = time.perf_counter()
++        z = vae.encode(pixels)
++        comfy.model_management.synchronize()
++        print(f"[H3_VAE_TIMING] {kind}={time.perf_counter() - started:.3f}s pixels={tuple(pixels.shape)}", flush=True)
++        return z
++
+     @classmethod
+     def execute(cls, clip, vae, audio_vae, prompt, width, height, length, ref_image_size="match",
+                 ref_images=None, ref_videos=None, ref_video_audios=None, ref_audios=None) -> io.NodeOutput:
+@@ -227,7 +242,7 @@ class MiniMaxH3ReferenceToVideo(io.ComfyNode):
+             tw = max(CANVAS_MULTIPLE, round(w * scale / CANVAS_MULTIPLE) * CANVAS_MULTIPLE)
+             th = max(CANVAS_MULTIPLE, round(h * scale / CANVAS_MULTIPLE) * CANVAS_MULTIPLE)
+             resized = _resize(img[:1], tw, th, "disabled")
+-            z = vae.encode(resized)
++            z = cls._encode_ref_vae(vae, resized, "ref_image_encode")
+             ref_items.append({"type": "image", "data": resized})
+             ref_blocks.append({"kind": "image", "latent_h": th // 16, "latent_w": tw // 16, "latent": z})
+ 
+@@ -251,7 +266,14 @@ class MiniMaxH3ReferenceToVideo(io.ComfyNode):
+             while n % 17 != 5:
+                 n -= 1
+             frames = frames[:n]
+-            z = vae.encode(frames)
++            sample_count = len(range(0, n, FPS // 2))
++            print(
++                f"[H3_REF_VIDEO] name={name} input_frames={video_frames.shape[0]} "
++                f"resize={cw}x{ch} target_frames={frame_count} encoded_frames={n} "
++                f"truncated={video_frames.shape[0] > frame_count} qwen_frames={sample_count}",
++                flush=True,
++            )
++            z = cls._encode_ref_vae(vae, frames, "ref_video_encode")
+             audio_latent, ref_audio_t = (None, 0)
+             if soundtrack is not None:
+                 audio_latent, ref_audio_t = cls._encode_ref_audio(audio_vae, soundtrack)
+diff --git a/comfy_extras/nodes_video.py b/comfy_extras/nodes_video.py
+index 45394ce..53997c3 100644
+--- a/comfy_extras/nodes_video.py
++++ b/comfy_extras/nodes_video.py
+@@ -3,6 +3,7 @@ import av
+ import torch
+ import folder_paths
+ import json
++import time
+ from typing import Optional
+ from typing_extensions import override
+ from fractions import Fraction
+@@ -119,6 +120,7 @@ class SaveVideo(io.ComfyNode):
+ 
+     @classmethod
+     def execute(cls, video: Input.Video, filename_prefix, format: str, codec: io.DynamicCombo.Type) -> io.NodeOutput:
++        t0 = time.perf_counter()
+         codec_name = codec["codec"]
+         encoding = codec.get("encoding") or {}
+         width, height = video.get_dimensions()
+@@ -145,6 +147,8 @@ class SaveVideo(io.ComfyNode):
+             metadata=saved_metadata,
+             crf=encoding.get("crf"),
+         )
++        dt = time.perf_counter() - t0
++        print(f"[SAVE_VIDEO_TIMING] save_to={dt:.2f}s file={file}", flush=True)
+ 
+         return io.NodeOutput(video, ui=ui.PreviewVideo([ui.SavedResult(file, subfolder, io.FolderType.output)]))
+ 
+@@ -184,12 +188,16 @@ class CreateVideo(io.ComfyNode):
+     def execute(
+         cls, images: Input.Image, fps: float, audio: Optional[Input.Audio] = None, bit_depth: int = 8,
+     ) -> io.NodeOutput:
+-        return io.NodeOutput(
++        t0 = time.perf_counter()
++        out = io.NodeOutput(
+             InputImpl.VideoFromComponents(
+                 Types.VideoComponents(images=images, audio=audio, frame_rate=Fraction(fps)),
+                 bit_depth=bit_depth,
+             )
+         )
++        dt = time.perf_counter() - t0
++        print(f"[CREATE_VIDEO_TIMING] compose={dt:.2f}s frames={len(images)} fps={fps}", flush=True)
++        return out
+ 
+ class GetVideoComponents(io.ComfyNode):
+     @classmethod
+diff --git a/kill.sh b/kill.sh
+index 7dbd386..4f26b35 100755
+--- a/kill.sh
++++ b/kill.sh
+@@ -3,10 +3,73 @@
+ set -euo pipefail
+ ROOT="$(cd "$(dirname "$0")" && pwd)"
+ PORT="${COMFY_PORT:-8188}"
++PIDS=()
++
++add_pid() {
++  local pid="${1:-}"
++  [[ "$pid" =~ ^[0-9]+$ ]] || return 0
++  [[ "$pid" == "$$" ]] && return 0
++  kill -0 "$pid" 2>/dev/null || return 0
++  PIDS+=("$pid")
++}
++
++# 1) Listeners on ComfyUI port
++if command -v lsof >/dev/null 2>&1; then
++  while read -r pid; do
++    add_pid "$pid"
++  done < <(lsof -t -iTCP:"${PORT}" -sTCP:LISTEN 2>/dev/null || true)
++fi
++if command -v fuser >/dev/null 2>&1; then
++  for pid in $(fuser "${PORT}/tcp" 2>/dev/null || true); do
++    add_pid "$pid"
++  done
++fi
++
++# 2) python main.py whose cwd is this ROOT (start_comfyui.sh: cd ROOT && exec python main.py)
++while read -r pid; do
++  [[ "$pid" =~ ^[0-9]+$ ]] || continue
++  cwd="$(readlink -f "/proc/${pid}/cwd" 2>/dev/null || true)"
++  [[ "$cwd" == "$ROOT" ]] && add_pid "$pid"
++done < <(pgrep -f '[Pp]ython.*main\.py' 2>/dev/null || true)
++
++# 3) Absolute-path launch
++while read -r pid; do
++  add_pid "$pid"
++done < <(pgrep -f "$ROOT/main\.py" 2>/dev/null || true)
++
++# Deduplicate
++if [[ ${#PIDS[@]} -gt 0 ]]; then
++  mapfile -t PIDS < <(printf '%s\n' "${PIDS[@]}" | awk 'NF && !seen[$0]++')
++fi
++
++if [[ ${#PIDS[@]} -eq 0 ]]; then
++  echo "No ComfyUI process found for $ROOT (port ${PORT})"
++  exit 0
++fi
++
++echo "Stopping ComfyUI PIDs: ${PIDS[*]} (port ${PORT})"
++kill -TERM "${PIDS[@]}" 2>/dev/null || true
++
++for _ in $(seq 1 20); do
++  alive=()
++  for pid in "${PIDS[@]}"; do
++    kill -0 "$pid" 2>/dev/null && alive+=("$pid")
++  done
++  [[ ${#alive[@]} -eq 0 ]] && break
++  sleep 0.5
++done
++
++alive=()
++for pid in "${PIDS[@]}"; do
++  kill -0 "$pid" 2>/dev/null && alive+=("$pid")
++done
++if [[ ${#alive[@]} -gt 0 ]]; then
++  echo "Force killing: ${alive[*]}"
++  kill -KILL "${alive[@]}" 2>/dev/null || true
++fi
+ 
+-pkill -f "$ROOT/main.py" 2>/dev/null || true
+-# Also match by listen port if still bound
+ if command -v fuser >/dev/null 2>&1; then
+   fuser -k "${PORT}/tcp" 2>/dev/null || true
+ fi
++
+ echo "Stopped ComfyUI for $ROOT (port ${PORT})"
+diff --git a/nodes.py b/nodes.py
+index 08529d8..fcff1f6 100644
+--- a/nodes.py
++++ b/nodes.py
+@@ -328,6 +328,7 @@ class VAEDecode:
+     SEARCH_ALIASES = ["decode", "decode latent", "latent to image", "render latent"]
+ 
+     def decode(self, vae, samples):
++        t0 = time.perf_counter()
+         latent = samples["samples"]
+         if latent.is_nested:
+             latent = latent.unbind()[0]
+@@ -335,6 +336,8 @@ class VAEDecode:
+         images = vae.decode(latent)
+         if len(images.shape) == 5: #Combine batches
+             images = images.reshape(-1, images.shape[-3], images.shape[-2], images.shape[-1])
++        dt = time.perf_counter() - t0
++        print(f"[VAE_VIDEO_TIMING] decode={dt:.2f}s shape={tuple(images.shape)}", flush=True)
+         return (images, )
+ 
+ class VAEDecodeTiled:
+diff --git a/start_comfyui.sh b/start_comfyui.sh
+index 74845f5..91f6313 100755
+--- a/start_comfyui.sh
++++ b/start_comfyui.sh
+@@ -1,19 +1,26 @@
+ #!/usr/bin/env bash
+-# Start ComfyUI with MiniMax-H3 (native T2V/I2V/R2V).
++# Start ONE ComfyUI-master_cp (MiniMax-H3). Single GPU (cuda:0).
+ set -euo pipefail
+ ROOT="$(cd "$(dirname "$0")" && pwd)"
+ cd "$ROOT"
+ 
+ export UV_INDEX_URL="${UV_INDEX_URL:-https://pypi.tuna.tsinghua.edu.cn/simple}"
+ export HF_ENDPOINT="${HF_ENDPOINT:-https://hf-mirror.com}"
+-export CUDA_VISIBLE_DEVICES=0
++
+ # shellcheck disable=SC1091
+ source .venv/bin/activate
+ 
+-mkdir -p output input temp logs
++mkdir -p output input temp logs user/default/workflows
+ PORT="${COMFY_PORT:-8188}"
+-echo "ComfyUI MiniMax-H3 -> http://0.0.0.0:${PORT}"
+-echo "Workflows: user/default/workflows/*.json"
+-echo "Models:    models/{diffusion_models,text_encoders,vae} -> /kwkj-k8s/MiniMax-H3/comfyui"
+ 
+-exec python main.py --listen 0.0.0.0 --port "${PORT}" --enable-manager ${COMFY_ARGS:-}
++echo "ComfyUI-master_cp MiniMax-H3 -> http://0.0.0.0:${PORT}"
++echo "Workflows: workflows/"
++echo "Models:    /big_models/comfyui-minimax-H3/ (extra_model_paths.yaml)"
++echo "GPU:       --cuda-device ${COMFY_CUDA_DEVICE:-0}"
++
++exec python main.py \
++  --listen 0.0.0.0 \
++  --port "${PORT}" \
++  --cuda-device "${COMFY_CUDA_DEVICE:-0}" \
++  --preview-method none \
++  ${COMFY_ARGS:-}

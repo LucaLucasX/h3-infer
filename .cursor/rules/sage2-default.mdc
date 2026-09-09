@@ -1,0 +1,12 @@
+---
+description: Default Sage attention is Sage2 MemEff; do not use Sage3 unless explicitly requested
+alwaysApply: true
+---
+
+# Sage attention default (MiniMax H3)
+
+- When the user says **sage** / enable sage / default acceleration attention → use **`sage_v2_memeff`** (`MiniMaxH3MemoryEfficientSageAttentionPatch` / SageAttention 2.2 MemEff).
+- **Do not use Sage3** (`sage_v3` / `sageattn3`) unless the user explicitly asks for Sage3.
+- Reason: on this 5090 setup Sage3 is only ~6–8% faster and often looks worse.
+- Aliases that must resolve to Sage2: `auto`, `sage`, `sage2`, `sage_v2`, `sage_v2_memeff`, `memeff`.
+- Code entry points: `h3_graph.resolve_attention_backend`, `DEFAULT_SAGE_BACKEND`, `GenerateParams.sage_attention="auto"`.

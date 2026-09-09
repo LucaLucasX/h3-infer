@@ -1,0 +1,15 @@
+# LoRA Optimizer experiment: prod LoRAs from big_models + SLA LoRA from experiments/sla.
+minimax_h3:
+  base_path: /big_models/comfyui-minimax-H3/
+  diffusion_models: diffusion_models
+  text_encoders: text_encoders
+  vae: vae
+  loras: loras
+
+sla_exp:
+  base_path: /mnt/luca/H3_infer/experiments/sla/models/
+  loras: loras
+
+lora_opt_exp:
+  base_path: /mnt/luca/H3_infer/experiments/lora_optimizer/models/
+  loras: loras

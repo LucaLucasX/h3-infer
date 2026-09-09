@@ -1,0 +1,18 @@
+id	title	task	model	requests	inputs	examples	directory
+t2v-10-01	古风玄幻 — 白发少女与龙	t2v	happyhorse-1.0-t2v	1	0	1	t2v-1.0/t2v-10-01
+t2v-10-02	新海诚风格星空少女	t2v	happyhorse-1.0-t2v	1	0	1	t2v-1.0/t2v-10-02
+t2v-10-03	Minecraft 风格武术对决	t2v	happyhorse-1.0-t2v	1	0	1	t2v-1.0/t2v-10-03
+t2v-10-04	私人飞机商务对话	t2v	happyhorse-1.0-t2v	1	0	1	t2v-1.0/t2v-10-04
+t2v-10-05	东方古装女子黑化	t2v	happyhorse-1.0-t2v	1	0	1	t2v-1.0/t2v-10-05
+t2v-10-06	巴黎咖啡馆对话	t2v	happyhorse-1.0-t2v	1	0	1	t2v-1.0/t2v-10-06
+t2v-10-07	韩国男女咖啡馆恋爱	t2v	happyhorse-1.0-t2v	1	0	1	t2v-1.0/t2v-10-07
+t2v-10-08	Pizza 店员工递餐	t2v	happyhorse-1.0-t2v	1	0	1	t2v-1.0/t2v-10-08
+t2v-10-09	微型料理延时摄影	t2v	happyhorse-1.0-t2v	1	0	1	t2v-1.0/t2v-10-09
+t2v-10-10	海滩空镜头延时摄影	t2v	happyhorse-1.0-t2v	1	0	1	t2v-1.0/t2v-10-10
+t2v-10-11	柠檬树生命周期延时摄影	t2v	happyhorse-1.0-t2v	1	0	1	t2v-1.0/t2v-10-11
+t2v-10-12	极限滑雪者与雪崩	t2v	happyhorse-1.0-t2v	1	0	1	t2v-1.0/t2v-10-12
+t2v-11-01	教室纯爱暧昧 — 日式青春短片	t2v	happyhorse-1.1-t2v	1	0	2	t2v-1.1/t2v-11-01
+t2v-11-02	大桥追车 — 好莱坞动作大片	t2v	happyhorse-1.1-t2v	1	0	2	t2v-1.1/t2v-11-02
+t2v-11-03	花样滑冰 — 体育竞技特写	t2v	happyhorse-1.1-t2v	1	0	2	t2v-1.1/t2v-11-03
+t2v-11-04	都市屋顶偶像 — J-Pop 舞台	t2v	happyhorse-1.1-t2v	1	0	2	t2v-1.1/t2v-11-04
+t2v-11-05	动漫格斗 — 2D 格斗游戏风	t2v	happyhorse-1.1-t2v	1	0	2	t2v-1.1/t2v-11-05
