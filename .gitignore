@@ -8,16 +8,23 @@
 .pytest_cache/
 
 # Duplicate ComfyUI tree and local caches
-ComfyUI-master_cp_te_exp/
 ComfyUI-master_cp/models/
 ComfyUI-master_cp/output/
 ComfyUI-master_cp/input/
 ComfyUI-master_cp/logs/
 ComfyUI-master_cp/user/
 ComfyUI-master_cp/.git/
+ComfyUI-master_cp_te_exp/models/
+ComfyUI-master_cp_te_exp/output/
+ComfyUI-master_cp_te_exp/input/
+ComfyUI-master_cp_te_exp/logs/
+ComfyUI-master_cp_te_exp/user/
+ComfyUI-master_cp_te_exp/.git/
+ComfyUI-master_cp_te_exp/user_ab_fp32/
 **/.deps/
 *.so
 *.so.*
+*.db
 .tools/
 
 # Nested third-party git checkouts / vendored clones
