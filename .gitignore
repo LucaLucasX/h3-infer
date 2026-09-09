@@ -7,6 +7,9 @@
 *.egg-info/
 .pytest_cache/
 
+# Local-only; not published
+H3-DMD-SLA/
+
 # Duplicate ComfyUI tree and local caches
 ComfyUI-master_cp/models/
 ComfyUI-master_cp/output/

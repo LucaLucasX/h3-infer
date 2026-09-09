@@ -15,7 +15,6 @@ MiniMax-H3 本地推理实验仓：ComfyUI 工作流、自定义节点、API 封
 - `api/`：t2v / i2v / r2v HTTP 服务
 - `dev/sage_lora_sparge/`：生产向 Sage2 + Turbo LoRA + Sparge 启动脚本和节点
 - `experiments/`：分辨率、量化、VAE、attention、lowvram 等对照实验
-- `H3-DMD-SLA/`：蒸馏 / 量化相关脚本
 
 ## 注意
 
